@@ -6,15 +6,17 @@ module nand_gate_tb_loop;
 
   reg expected_c;
 
+  integer i, j;
+
   initial begin
     a = 0;
     b = 0;
 
     #10
 
-    for(int i = 0; i <= 1; i = i + 1)
+    for(i = 0; i <= 1; i = i + 1)
     begin
-    	for (int j = 0; j <= 1; j = j + 1)
+    	for (j = 0; j <= 1; j = j + 1)
     	begin
     		a = i;
     		b = j;
@@ -24,7 +26,6 @@ module nand_gate_tb_loop;
     		if (expected_c !== c)
     		begin
     			$display("ERROR: Expected: %d, Got: %d", expected_c, c);
-    			$finish;
     		end
     	end
     end
