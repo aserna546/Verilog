@@ -18,7 +18,7 @@ module multiplier #(
     for (i=0; i < IN_WIDTH; i=i+1) begin
       if (i == 0) begin
         for (j=0; j < IN_WIDTH; j=j+1) begin
-          n = j + 1;
+          n = j;
           if (j == 0) begin
             // First stage of multiplying the first bit 
             // A0 multiply n-bit 
@@ -36,12 +36,27 @@ module multiplier #(
       else begin
         // multiplying the individual bits with b0-b3
         for (j=0 ; j < IN_WIDTH; j=j+1) begin
-          bit1_multiplier and1 (a[i], b[j], multW[n]);
           n = n + 1;
+          bit1_multiplier and1 (a[i], b[j], multW[n]);
         end
         // adding the partial products of the multiplaction.
-        adder #(IN_WIDTH) add_instant (multW[IN_WIDTH-1:0], multW[n:IN_WIDTH], adderW[IN_WIDTH:0]);
-
+        if (i == 1) begin
+          adder #(IN_WIDTH) add_instant (multW[IN_WIDTH-1:0], multW[n:IN_WIDTH], adderW[IN_WIDTH:0]);
+          out[i] = adderW[i - 1];
+          if (i == IN_WIDTH - 1) begin // for 2 bit multiply
+            out[OUT_WIDTH - 1 : i + 1] = adderW[IN_WIDTH:1];
+          end
+        end 
+        else begin
+          adder #(IN_WIDTH) add_instant (adderW[index + IN_WIDTH - 1 : index], multW[n : n - IN_WIDTH + 1], adderW[index + OUT_WIDTH : index + IN_WIDTH]);
+          if (i == IN_WIDTH - 1) begin
+            out[OUT_WIDTH - 1 : i] = adderW[index + OUT_WIDTH : index + IN_WIDTH];
+          end
+          else begin
+            index = index + IN_WIDTH + 1;
+            out[i] = adderW[index - 1];
+          end
+        end
       end
       bit1_multiplier and1 ();
     end
