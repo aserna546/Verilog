@@ -38,5 +38,4 @@ module multiplier #(
   adder #(IN_WIDTH) add_instant1 (addW[4:1], multW2[3:0], addW1[4:0]);
   adder #(IN_WIDTH) add_instant2 (addW1[4:1], multW3[3:0], addW2[4:0]);
   
-*/
 endmodule // 4bit_multiplier
